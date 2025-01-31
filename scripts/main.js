@@ -19,7 +19,13 @@ const renderCards = (array) => {
 // .findIndex() & (.includes() - string method)
 const toggleCart = (event) => {
   if (event.target.id.includes("fav-btn")) {
-    console.log("Clicked Fav btn");
+    if (event.target.id.includes("fav-btn")) {
+      const [, id] = event.target.id.split("--");
+      const index = referenceList.findIndex((item) => item.id === Number(id));
+      referenceList[index].inCart = !referenceList[index].inCart;
+      cartTotal();
+      renderCards(referenceList);
+    }
   }
 };
 
@@ -27,7 +33,13 @@ const toggleCart = (event) => {
 // .filter()
 const search = (event) => {
   const eventLC = event.target.value.toLowerCase();
-  console.log(eventLC);
+  const searchResult = referenceList.filter(
+    (item) =>
+      item.title.toLowerCase().includes(eventLC) ||
+      item.author.toLowerCase().includes(eventLC) ||
+      item.description.toLowerCase().includes(eventLC)
+  );
+  renderCards(searchResult);
 };
 
 // BUTTON FILTER
@@ -75,7 +87,9 @@ const buttonFilter = (event) => {
 // CALCULATE CART TOTAL
 // .reduce() & .some()
 const cartTotal = () => {
-  const total = 0;
+  const cart = referenceList.filter((item) => item.inCart);
+  const total = cart.reduce((a, b) => a + b.price, 0);
+
   document.querySelector("#cartTotal").innerHTML = total.toFixed(2);
 };
 
